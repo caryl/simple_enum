@@ -1,0 +1,33 @@
+一个简单的枚举插件,可用于状态、类别等，在同一个类可以定义多个
+ version 0.13
+ by Caryl
+
+============================================
+安装
+
+
+============================================
+用法：
+class User
+include SimpleEnum
+has_enum :status, :enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]], :column => :status_id, :default => :normal
+============================================
+会生成下列方法
+User.status_enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]]
+User.options_for_status => [["正常", 1], ["草稿", 0], ["锁定回复", 2], ["隐藏", 3]]
+User.status_name(:normal) => "正常" #根据参数返回名称
+  参数：数组 符号 数字 字符串
+User.status_value(:normal) => 1 #根据参数返回值
+  参数：数组 符号 数字 字符串
+user.status_name => '正常' #当前名称
+user.status_is?(:normal) => true #是否匹配
+  参数：数组 符号 数字 字符串
+user.set_status_value(:locked) #设置值
+  参数：数组 符号 数字 字符串
+user.update_status(:locked) #更新值
+  参数：数组 符号 数字 字符串
+  
+生成一个named_scope
+User.status_in()
+  参数：数组 符号 数字 字符串
+
