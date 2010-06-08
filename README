@@ -1,11 +1,11 @@
 一个简单的枚举插件,可用于状态、类别等，在同一个类可以定义多个
- version 0.13
+ version 0.14
  by Caryl
 
 ============================================
 安装
 
-
+./script/plugin install git://github.com/caryl/simple_enum.git
 ============================================
 用法：
 class User
