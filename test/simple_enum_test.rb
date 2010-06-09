@@ -3,7 +3,6 @@ require File.dirname(__FILE__) + '/test_helper'
 class SimpleEnumTest < Test::Unit::TestCase
   def setup
     @mock = Mock.new
-    @mock.status = 2
   end
   
   def test_enum_scope
@@ -25,11 +24,19 @@ class SimpleEnumTest < Test::Unit::TestCase
     assert_equal Mock.status_value(:other), nil
   end
   
-  def test_enum_name
+  def test_class_enum_name
     assert_equal Mock.status_name(:locked), '锁定'
     assert_equal Mock.status_name('正常'), '正常'
     assert_equal Mock.status_name(1), '正常'
     assert_equal Mock.status_name(:other), nil
+  end
+  
+  def test_enum_default
+    mock = Mock.new
+    assert_equal mock.status, 2
+    mock.status = 3
+    assert_equal mock.status, 3
+    assert_equal mock.status_default_value, 2
   end
   
   def test_enum_name
@@ -60,7 +67,6 @@ end
 
 
 class Mock < ActiveRecord::Base
-  attr_accessor :status
   include SimpleEnum
   has_enum :status, :enums => [[:normal, 1, '正常'],[:locked, 2, '锁定'],[:deleted, 3, '已删除']], :column => :status, :default => :locked
 end

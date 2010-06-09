@@ -17,6 +17,7 @@ module SimpleEnum
       self.module_eval do 
         named_scope "#{name}_in", lambda{|s|{:conditions=>{self.send(column_attr).to_sym => self.send("#{name}_value", s)}}}
         before_create "set_default_enum_#{name}"
+
         #类方法
         #返回一个select options数组
         self.class.send(:define_method, "options_for_#{name}") do 
@@ -49,6 +50,10 @@ module SimpleEnum
         end
         
         #实例方法
+        self.send(:define_method, name) do
+          self.attributes[name.to_s] || self.send("#{name}_default_value")
+        end
+        
         #当前名称
         self.send(:define_method, "#{name}_name") do
           self.class.send(enums_attr).detect {|s| s.second == self.send(self.class.send(column_attr))}.try(:last)
@@ -85,8 +90,12 @@ module SimpleEnum
 
         #默认值
         self.send(:define_method, "set_default_enum_#{name}") do
-          self.send("#{self.class.send(column_attr)}=", self.class.send("#{name}_value", self.class.send(default_attr))) \
+          self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value") ) \
             unless self.send("#{self.class.send(column_attr)}").present?
+        end
+        
+        self.send(:define_method, "#{name}_default_value") do
+          self.class.send("#{name}_value", self.class.send(default_attr))
         end
       end
     end

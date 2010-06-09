@@ -1,5 +1,5 @@
 一个简单的枚举插件,可用于状态、类别等，在同一个类可以定义多个
- version 0.14
+ version 0.15
  by Caryl
 
 ============================================
@@ -19,6 +19,7 @@ User.status_name(:normal) => "正常" #根据参数返回名称
   参数：数组 符号 数字 字符串
 User.status_value(:normal) => 1 #根据参数返回值
   参数：数组 符号 数字 字符串
+user.status => 如果为空返回默认值
 user.status_name => '正常' #当前名称
 user.status_is?(:normal) => true #是否匹配
   参数：数组 符号 数字 字符串
@@ -26,7 +27,7 @@ user.set_status_value(:locked) #设置值
   参数：数组 符号 数字 字符串
 user.update_status(:locked) #更新值
   参数：数组 符号 数字 字符串
-  
+user.status_default_value => 返回默认值
 生成一个named_scope
 User.status_in()
   参数：数组 符号 数字 字符串
