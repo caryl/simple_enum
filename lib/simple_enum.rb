@@ -90,8 +90,9 @@ module SimpleEnum
 
         #默认值
         self.send(:define_method, "set_default_enum_#{name}") do
+          column_name = "#{self.class.send(column_attr)}"
           self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value") ) \
-            unless self.send("#{self.class.send(column_attr)}").present?
+            if self.has_attribute?(column_name) && self.attributes[column_name].blank?
         end
         
         self.send(:define_method, "#{name}_default_value") do
