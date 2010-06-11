@@ -18,11 +18,9 @@ by Caryl
 
 Example:
 
-    class User
-      include SimpleEnum
-      has_enum :status, :enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]], 
-        :column => :status_id, :default => :normal
-    end
+  include SimpleEnum
+  has_enum :status, :enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]], \
+    :column => :status_id, :default => :normal
 
 options:
   has_enum name, enums[, column][, default]
@@ -44,10 +42,10 @@ This will generate the following methods dynamically:
 * User.options_for_status => [["正常", 1], ["草稿", 0], ["锁定回复", 2], ["隐藏", 3]]
 
 * User.status_name(:normal) => "正常" #return enum's human name
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
 
 * User.status_value(:normal) => 1 #return enum value
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
   
 * User.new => #default value has been set: user.status == 1
 
@@ -62,18 +60,18 @@ This will generate the following methods dynamically:
 * user.status_name => '正常' #enum's human name
 
 * user.status_is?(:normal) => true 
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
 
 * user.status_default_value => #default value , assign by :default option, default is the first of :enums
 
 * user.set_status_value(:locked) #set value, same as user.status=2 or status=2
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
 
 * user.update_status_value(:locked) #update value 
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
 
 ==name scope
 --
 * User.status_in()
-#   params: array, symbol, integer, string or array
+  * params: array, symbol, integer, string or array
 
