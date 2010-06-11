@@ -8,15 +8,13 @@ module SimpleEnum
       column_attr = "enum_#{name}_column"
       enums_attr = "#{name}_enums"
       default_attr = "default_#{name}_enum"
-      cattr_accessor column_attr
-      cattr_accessor enums_attr 
-      cattr_accessor default_attr
+      cattr_accessor column_attr, enums_attr, default_attr
       self.send("#{column_attr}=",  options[:column] || "#{name}_id")
       self.send("#{enums_attr}=", options[:enums])
       self.send("#{default_attr}=", options[:default] || options[:enums].first.first)
       self.module_eval do 
         named_scope "#{name}_in", lambda{|s|{:conditions=>{self.send(column_attr).to_sym => self.send("#{name}_value", s)}}}
-        before_create "set_default_enum_#{name}"
+        #before_create "set_#{name}_default_value"
 
         #类方法
         #返回一个select options数组
@@ -49,16 +47,16 @@ module SimpleEnum
           end
         end
         
-        #实例方法
-        self.send(:define_method, name) do
-          self.attributes[name.to_s] || self.send("#{name}_default_value")
-        end
-        
         #当前名称
         self.send(:define_method, "#{name}_name") do
           self.class.send(enums_attr).detect {|s| s.second == self.send(self.class.send(column_attr))}.try(:last)
         end
-
+        
+        #当前key
+        self.send(:define_method, "#{name}_key") do
+          self.class.send(enums_attr).detect {|s| s.second == self.send(self.class.send(column_attr))}.try(:first)
+        end
+        
         #设置值
         self.send(:define_method, "set_#{name}_value") do |param|
           value_id =
@@ -74,7 +72,7 @@ module SimpleEnum
         end
 
         #更新值
-        self.send(:define_method, "update_#{name}") do |param|
+        self.send(:define_method, "update_#{name}_value") do |param|
           self.send("set_#{name}_value", param)
           self.save(false)
         end
@@ -89,15 +87,24 @@ module SimpleEnum
         end
 
         #默认值
-        self.send(:define_method, "set_default_enum_#{name}") do
+        self.send(:define_method, "set_#{name}_default_value") do
           column_name = "#{self.class.send(column_attr)}"
-          self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value") ) \
-            if self.has_attribute?(column_name) && self.attributes[column_name].blank?
+          self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value"))
         end
         
         self.send(:define_method, "#{name}_default_value") do
           self.class.send("#{name}_value", self.class.send(default_attr))
         end
+        
+        #可使用name和column访问        
+        self.send(:alias_attribute, name, self.send(column_attr)) unless name.to_s == self.send(column_attr).to_s
+        
+        #默认值
+        self.send(:define_method, "initialize_with_default_#{name}") do
+          self.send("initialize_without_default_#{name}")
+          self.send("set_#{name}_default_value")
+        end
+        alias_method_chain :initialize, "default_#{name}"
       end
     end
   end

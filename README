@@ -1,34 +1,78 @@
-一个简单的枚举插件,可用于状态、类别等，在同一个类可以定义多个
- version 0.16
- by Caryl
+=SimpleEnum
 
-============================================
-安装
+== Description
+Simple Enum is a simple and useful plugin for using enum attribute.
+
+version 0.20
+by Caryl
+
+== Requirements
+
+* Rails 2.2.2 or greater
+
+==Installation
 
 ./script/plugin install git://github.com/caryl/simple_enum.git
-============================================
-用法：
+
+==Getting Started
+
+Example:
+
 class User
-include SimpleEnum
-has_enum :status, :enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]], :column => :status_id, :default => :normal
-============================================
-会生成下列方法
-User.status_enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]]
-User.options_for_status => [["正常", 1], ["草稿", 0], ["锁定回复", 2], ["隐藏", 3]]
-User.status_name(:normal) => "正常" #根据参数返回名称
-  参数：数组 符号 数字 字符串
-User.status_value(:normal) => 1 #根据参数返回值
-  参数：数组 符号 数字 字符串
-user.status => 如果为空返回默认值
-user.status_name => '正常' #当前名称
-user.status_is?(:normal) => true #是否匹配
-  参数：数组 符号 数字 字符串
-user.set_status_value(:locked) #设置值
-  参数：数组 符号 数字 字符串
-user.update_status(:locked) #更新值
-  参数：数组 符号 数字 字符串
-user.status_default_value => 返回默认值
-生成一个named_scope
-User.status_in()
-  参数：数组 符号 数字 字符串
+  include SimpleEnum
+  has_enum :status, :enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]], :column => :status_id, :default => :normal
+end
+
+options:
+  has_enum name, enums[, column][, default]
+* name: enum name 
+* enum: a array to define enums, each enum defined by [key(symbol), value(integer), human_name(string)]
+* column: optional, must be a column, attr_accessor or a getter and setter method pair
+        default is name + '_id'
+* default: enum's default value, can assigned by a symbol(key) integer(value) or string(human name)
+        default is the first enum
+
+=Usage
+
+This will generate the following methods dynamically:
+
+==class methods:
+--------------------------------------------------------------
+* User.status_enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]]
+
+* User.options_for_status => [["正常", 1], ["草稿", 0], ["锁定回复", 2], ["隐藏", 3]]
+
+* User.status_name(:normal) => "正常" #return enum's human name
+    params: array, symbol, integer, string or array
+
+* User.status_value(:normal) => 1 #return enum value
+    params: array, symbol, integer, string or array
+  
+* User.new => #default value has been set: user.status == 1
+
+==instance methods:
+--------------------------------------------------------------
+* user.status => #same as status_id
+
+* user.status= => #same as status_id =
+
+* user.status_key => :locked #enum key
+
+* user.status_name => '正常' #enum's human name
+
+* user.status_is?(:normal) => true 
+    params: array, symbol, integer, string or array
+
+* user.status_default_value => #default value , assign by :default option, default is the first of :enums
+
+* user.set_status_value(:locked) #set value, same as user.status=2 or status=2
+    params: array, symbol, integer, string or array
+
+* user.update_status_value(:locked) #update value 
+    params: array, symbol, integer, string or array
+
+==name scope
+--------------------------------------------------------------
+* User.status_in()
+    params: array, symbol, integer, string or array
 
