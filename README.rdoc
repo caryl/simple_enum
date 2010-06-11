@@ -3,8 +3,8 @@
 == Description
 Simple Enum is a simple and useful plugin for using enum attribute.
 
-*version 0.20
-*by Caryl
+* version 0.20
+* by Caryl
 
 == Requirements
 
@@ -36,7 +36,7 @@ options:
 This will generate the following methods dynamically:
 
 ==class methods:
------------------------------------------------------------------
+
 * User.status_enums => [[:unactived, 0, "未激活"],[:normal, 1, "正常"],[:locked, 2, "已锁定"]]
 
 * User.options_for_status => [["正常", 1], ["草稿", 0], ["锁定回复", 2], ["隐藏", 3]]
@@ -50,7 +50,7 @@ This will generate the following methods dynamically:
 * User.new => #default value has been set: user.status == 1
 
 ==instance methods:
------------------------------------------------------------------
+
 * user.status => #same as status_id
 
 * user.status= => #same as status_id =
@@ -71,7 +71,7 @@ This will generate the following methods dynamically:
   * params: array, symbol, integer, string or array
 
 ==name scope
------------------------------------------------------------------
+
 * User.status_in()
   * params: array, symbol, integer, string or array
 
