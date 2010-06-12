@@ -33,7 +33,7 @@ options:
 
 =Usage
 
-This will generate the following methods dynamically:
+This will define the following methods dynamically:
 
 ==class methods:
 
@@ -64,14 +64,14 @@ This will generate the following methods dynamically:
 
 * user.status_default_value => #default value , assign by :default option, default is the first of :enums
 
-* user.set_status_value(:locked) #set value, same as user.status=2 or status=2
+* user.set_status_value(:locked) #set value, same as user.status=2 or user.status_id=2
   * params: array, symbol, integer, string or array
 
 * user.update_status_value(:locked) #update value 
   * params: array, symbol, integer, string or array
 
-==name scope
+==named scope
 
-* User.status_in()
+* User.status_in(:locked)
   * params: array, symbol, integer, string or array
 

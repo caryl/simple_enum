@@ -14,7 +14,6 @@ module SimpleEnum
       self.send("#{default_attr}=", options[:default] || options[:enums].first.first)
       self.module_eval do 
         named_scope "#{name}_in", lambda{|s|{:conditions=>{self.send(column_attr).to_sym => self.send("#{name}_value", s)}}}
-        #before_create "set_#{name}_default_value"
 
         #类方法
         #返回一个select options数组
@@ -30,7 +29,7 @@ module SimpleEnum
             self.send(enums_attr).assoc(param).try(:second)
           elsif param.is_a?(String)
             self.send(enums_attr).detect{|s| s.third == param }.try(:second)
-        else
+          else
             param
           end
         end
@@ -96,15 +95,15 @@ module SimpleEnum
           self.class.send("#{name}_value", self.class.send(default_attr))
         end
         
-        #可使用name和column访问        
-        self.send(:alias_attribute, name, self.send(column_attr)) unless name.to_s == self.send(column_attr).to_s
         
-        #默认值
         self.send(:define_method, "initialize_with_default_#{name}") do
           self.send("initialize_without_default_#{name}")
           self.send("set_#{name}_default_value")
         end
+        
         alias_method_chain :initialize, "default_#{name}"
+        #可使用name和column访问        
+        alias_attribute name, self.send(column_attr) unless name.to_s == self.send(column_attr).to_s
       end
     end
   end
