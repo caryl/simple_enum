@@ -5,6 +5,11 @@ class SimpleEnumTest < Test::Unit::TestCase
     @mock = Mock.new
   end
   
+  def test_mock_new
+    mock = Mock.new(:name => "my name")
+    assert_equal mock.name, "my name"
+  end
+  
   def test_enum_scope
     assert_equal Mock.status_in(:normal).class, ActiveRecord::NamedScope::Scope
     assert_equal Mock.kind_in(:normal).class, ActiveRecord::NamedScope::Scope

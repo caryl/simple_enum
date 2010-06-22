@@ -87,7 +87,6 @@ module SimpleEnum
 
         #默认值
         self.send(:define_method, "set_#{name}_default_value") do
-          column_name = "#{self.class.send(column_attr)}"
           self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value"))
         end
         
@@ -96,8 +95,9 @@ module SimpleEnum
         end
         
         
-        self.send(:define_method, "initialize_with_default_#{name}") do
-          self.send("initialize_without_default_#{name}")
+        self.send(:define_method, "initialize_with_default_#{name}") do |*args|
+          attrs = args.first
+          self.send("initialize_without_default_#{name}", attrs)
           self.send("set_#{name}_default_value")
         end
         
