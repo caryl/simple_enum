@@ -3,7 +3,7 @@
 == Description
 Simple Enum is a simple and useful plugin for using enum attribute.
 
-* version 0.21
+* version 0.22
 * by Caryl
 
 == Requirements

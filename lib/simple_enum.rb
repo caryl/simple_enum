@@ -48,12 +48,12 @@ module SimpleEnum
         
         #当前名称
         self.send(:define_method, "#{name}_name") do
-          self.class.send(enums_attr).detect {|s| s.second == self.send(self.class.send(column_attr))}.try(:last)
+          self.class.send(enums_attr).detect {|s| s.second == self.send(self.send(column_attr))}.try(:last)
         end
         
         #当前key
         self.send(:define_method, "#{name}_key") do
-          self.class.send(enums_attr).detect {|s| s.second == self.send(self.class.send(column_attr))}.try(:first)
+          self.class.send(enums_attr).detect {|s| s.second == self.send(self.send(column_attr))}.try(:first)
         end
         
         #设置值
@@ -62,11 +62,11 @@ module SimpleEnum
             if param.is_a?(Symbol)  #key
             self.class.send("#{name}_value", param)
           elsif param.is_a?(String) #name
-            self.class.send(enums_attr).detect {|s| s.last == param  }.try(:second)
+            self.send(enums_attr).detect {|s| s.last == param  }.try(:second)
           else #id
             param
           end
-          self.send("#{self.class.send(column_attr)}=", value_id)
+          self.send("#{self.send(column_attr)}=", value_id)
           value_id
         end
 
@@ -81,19 +81,18 @@ module SimpleEnum
           if key.is_a?(Array)
             key.detect{|p|self.send("#{name}_is?", p)}
           else
-            self.class.send("#{name}_value", key) == self.send(self.class.send(column_attr))
+            self.class.send("#{name}_value", key) == self.send(self.send(column_attr))
           end
         end
 
         #默认值
         self.send(:define_method, "set_#{name}_default_value") do
-          self.send("#{self.class.send(column_attr)}=", self.send("#{name}_default_value"))
+          self.send("#{self.send(column_attr)}=", self.send("#{name}_default_value"))
         end
         
         self.send(:define_method, "#{name}_default_value") do
-          self.class.send("#{name}_value", self.class.send(default_attr))
+          self.class.send("#{name}_value", self.send(default_attr))
         end
-        
         
         self.send(:define_method, "initialize_with_default_#{name}") do |*args|
           attrs = args.first
