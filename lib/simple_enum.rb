@@ -14,8 +14,13 @@ module SimpleEnum
       self.send("#{default_attr}=", options[:default] || options[:enums].first.first)
       self.module_eval do 
         named_scope "#{name}_in", lambda{|s|{:conditions=>{self.send(column_attr).to_sym => self.send("#{name}_value", s)}}}
-
+        
         #类方法
+        #enum_in的别名：enum_is
+        self.class.send(:define_method, "#{name}_is") do |s|
+          self.send "#{name}_in", s
+        end
+
         #返回一个select options数组
         self.class.send(:define_method, "options_for_#{name}") do 
           self.send(enums_attr).map{|s|[s.last, s.second]}
@@ -25,7 +30,7 @@ module SimpleEnum
         self.class.send(:define_method, "#{name}_value") do |param|
           if param.is_a?(Array)
             param.map{|p|self.send("#{name}_value",p)}
-          elsif param.is_a?(Symbol)
+        elsif param.is_a?(Symbol)
             self.send(enums_attr).assoc(param).try(:second)
           elsif param.is_a?(String)
             self.send(enums_attr).detect{|s| s.third == param }.try(:second)
