@@ -49,6 +49,8 @@ This will define the following methods dynamically:
   
 * User.new => #default value has been set: user.status == 1
 
+* User.status_is(:normal) => same as User.status_in(:normal) 
+
 ==instance methods:
 
 * user.status => #same as status_id

@@ -17,6 +17,7 @@ class SimpleEnumTest < Test::Unit::TestCase
   def test_enum_scope
     assert_equal Mock.status_in(:normal).class, ActiveRecord::NamedScope::Scope
     assert_equal Mock.kind_in(:normal).class, ActiveRecord::NamedScope::Scope
+    assert_equal Mock.status_is(:normal).class, ActiveRecord::NamedScope::Scope
   end
   
   def test_enum_enums
