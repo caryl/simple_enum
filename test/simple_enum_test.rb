@@ -6,8 +6,12 @@ class SimpleEnumTest < Test::Unit::TestCase
   end
   
   def test_mock_new
+    mock = Mock.new(:name => "my name", :status => '3')
+    assert_equal mock.name, "my name"
+    assert_equal mock.status, 3
     mock = Mock.new(:name => "my name")
     assert_equal mock.name, "my name"
+    assert_equal mock.status, 2
   end
   
   def test_enum_scope
