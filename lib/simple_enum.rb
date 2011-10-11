@@ -1,6 +1,9 @@
 module SimpleEnum
   def self.included(base)
+    base.cattr_accessor :enum_columns
     base.extend EnumMethods
+    base.send :include, InstanceMethods
+    base.alias_method_chain :initialize, :enum_defaults
   end
 
   module EnumMethods
@@ -9,11 +12,13 @@ module SimpleEnum
       enums_attr = "#{name}_enums"
       default_attr = "default_#{name}_enum"
       cattr_accessor column_attr, enums_attr, default_attr
+      self.enum_columns ||= []
+      self.enum_columns << name
       self.send("#{column_attr}=",  options[:column] || "#{name}_id")
       self.send("#{enums_attr}=", options[:enums])
       self.send("#{default_attr}=", options[:default] || options[:enums].first.first)
       self.module_eval do 
-        named_scope "#{name}_in", lambda{|s|{:conditions=>{self.send(column_attr).to_sym => self.send("#{name}_value", s)}}}
+        scope "#{name}_in", lambda{|s| where(self.send(column_attr).to_sym => self.send("#{name}_value", s)) }
         
         #类方法
         #enum_in的别名：enum_is
@@ -30,7 +35,7 @@ module SimpleEnum
         self.class.send(:define_method, "#{name}_value") do |param|
           if param.is_a?(Array)
             param.map{|p|self.send("#{name}_value",p)}
-        elsif param.is_a?(Symbol)
+          elsif param.is_a?(Symbol)
             self.send(enums_attr).assoc(param).try(:second)
           elsif param.is_a?(String)
             self.send(enums_attr).detect{|s| s.third == param }.try(:second)
@@ -78,7 +83,7 @@ module SimpleEnum
         #更新值
         self.send(:define_method, "update_#{name}_value") do |param|
           self.send("set_#{name}_value", param)
-          self.save(false)
+          self.save(:validate => false)
         end
 
         #判断当前实例是否是
@@ -98,17 +103,20 @@ module SimpleEnum
         self.send(:define_method, "#{name}_default_value") do
           self.class.send("#{name}_value", self.send(default_attr))
         end
-        
-        self.send(:define_method, "initialize_with_default_#{name}") do |*args|
-          attrs = args.first
-          self.send("initialize_without_default_#{name}", attrs)
-          self.send("set_#{name}_default_value") unless attrs && attrs.include?(name)
-        end
-        
-        alias_method_chain :initialize, "default_#{name}"
+
         #可使用name和column访问        
         alias_attribute name, self.send(column_attr) unless name.to_s == self.send(column_attr).to_s
       end
+    end
+  end
+
+  module InstanceMethods
+    def initialize_with_enum_defaults(attrs = nil, *args, &block)
+      initialize_without_enum_defaults(attrs, *args, &block)
+      self.enum_columns.each do |column|
+        self.send("set_#{column}_default_value") unless attrs && attrs.include?(self.send("enum_#{column}_column").to_sym)
+      end
+      yield(self) if block_given?
     end
   end
 end
