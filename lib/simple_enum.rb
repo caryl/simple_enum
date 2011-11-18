@@ -114,7 +114,7 @@ module SimpleEnum
     def initialize_with_enum_defaults(attrs = nil, *args, &block)
       initialize_without_enum_defaults(attrs, *args, &block)
       self.enum_columns.each do |column|
-        self.send("set_#{column}_default_value") unless attrs && attrs.include?(self.send("enum_#{column}_column").to_sym)
+        self.send("set_#{column}_default_value") unless attrs && attrs.include?(self.send("enum_#{column}_column").to_sym) || !self.respond_to?("set_#{column}_default_value")
       end
       yield(self) if block_given?
     end
