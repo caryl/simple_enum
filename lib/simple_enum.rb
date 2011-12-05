@@ -17,9 +17,9 @@ module SimpleEnum
       self.send("#{column_attr}=",  options[:column] || "#{name}_id")
       self.send("#{enums_attr}=", options[:enums])
       self.send("#{default_attr}=", options[:default] || options[:enums].first.first)
-      self.module_eval do 
+      self.module_eval do
         scope "#{name}_in", lambda{|s| where(self.send(column_attr).to_sym => self.send("#{name}_value", s)) }
-        
+
         #类方法
         #enum_in的别名：enum_is
         self.class.send(:define_method, "#{name}_is") do |s|
@@ -59,17 +59,17 @@ module SimpleEnum
             self.send(enums_attr).detect{|s| s.second == param }.try(:last)
           end
         end
-        
+
         #当前名称
         self.send(:define_method, "#{name}_name") do
           self.class.send(enums_attr).detect {|s| s.second == self.send(self.send(column_attr))}.try(:last)
         end
-        
+
         #当前key
         self.send(:define_method, "#{name}_key") do
           self.class.send(enums_attr).detect {|s| s.second == self.send(self.send(column_attr))}.try(:first)
         end
-        
+
         #设置值
         self.send(:define_method, "set_#{name}_value") do |param|
           value_id =
@@ -103,12 +103,12 @@ module SimpleEnum
         self.send(:define_method, "set_#{name}_default_value") do
           self.send("#{self.send(column_attr)}=", self.send("#{name}_default_value"))
         end
-        
+
         self.send(:define_method, "#{name}_default_value") do
           self.class.send("#{name}_value", self.send(default_attr))
         end
 
-        #可使用name和column访问        
+        #可使用name和column访问
         alias_attribute name, self.send(column_attr) unless name.to_s == self.send(column_attr).to_s
       end
     end
@@ -118,7 +118,7 @@ module SimpleEnum
     def initialize_with_enum_defaults(attrs = nil, *args, &block)
       initialize_without_enum_defaults(attrs, *args, &block)
       self.enum_columns.each do |column|
-        self.send("set_#{column}_default_value") unless attrs && attrs.include?(self.send("enum_#{column}_column").to_sym) || !self.respond_to?("set_#{column}_default_value")
+        self.send("set_#{column}_default_value") unless attrs && self.respond_to?("enum_#{column}_column") && attrs.include?(self.send("enum_#{column}_column").to_sym) || !self.respond_to?("set_#{column}_default_value")
       end
       yield(self) if block_given?
     end
