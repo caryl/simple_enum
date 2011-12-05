@@ -15,9 +15,9 @@ class SimpleEnumTest < Test::Unit::TestCase
   end
   
   def test_enum_scope
-    assert_equal Mock.status_in(:normal).class, ActiveRecord::NamedScope::Scope
-    assert_equal Mock.kind_in(:normal).class, ActiveRecord::NamedScope::Scope
-    assert_equal Mock.status_is(:normal).class, ActiveRecord::NamedScope::Scope
+    assert_equal Mock.status_in(:normal).class, ActiveRecord::Relation
+    assert_equal Mock.kind_in(:normal).class, ActiveRecord::Relation
+    assert_equal Mock.status_is(:normal).class, ActiveRecord::Relation
   end
   
   def test_enum_enums
@@ -27,6 +27,7 @@ class SimpleEnumTest < Test::Unit::TestCase
   
   def test_options_for_enum
     assert_equal Mock.options_for_status, [['正常',1],['锁定',2],['已删除',3]]
+	assert_equal Mock.options_for_status(:normal, :locked), [['正常',1],['锁定',2]]
     assert_equal Mock.options_for_kind, [['管理员',1],['成员',2]]
   end
 

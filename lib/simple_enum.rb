@@ -27,8 +27,12 @@ module SimpleEnum
         end
 
         #返回一个select options数组
-        self.class.send(:define_method, "options_for_#{name}") do 
-          self.send(enums_attr).map{|s|[s.last, s.second]}
+        self.class.send(:define_method, "options_for_#{name}") do |*params|
+          if params.blank?
+            self.send(enums_attr).map{|s|[s.last, s.second]}
+          else
+            self.send(enums_attr).select{|e|params.include?(e.first)}.map{|s|[s.last, s.second]}
+          end
         end
 
         #根据数组、符号、字符串返回value
