@@ -30,8 +30,10 @@ module SimpleEnum
         self.class.send(:define_method, "options_for_#{name}") do |*params|
           if params.blank?
             self.send(enums_attr).map{|s|[s.last, s.second]}
-          else
+          elsif params.first.is_a?(Symbol)
             self.send(enums_attr).select{|e|params.include?(e.first)}.map{|s|[s.last, s.second]}
+          elsif params.first.is_a?(Array)
+            params.map{|p|[p.second, self.send(enums_attr).detect{|e|e.first == p.first}.try(:second)]}
           end
         end
 
