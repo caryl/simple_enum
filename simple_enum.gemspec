@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "simple_enum/version"
 
 Gem::Specification.new do |s|
-  s.name        = "simple_enum"
+  s.name        = "simple_enums"
   s.version     = SimpleEnum::VERSION
   s.authors     = ["CarylWang"]
   s.email       = ["xianwei.wang@gmail.com"]
