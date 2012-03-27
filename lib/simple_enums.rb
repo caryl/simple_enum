@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 module SimpleEnum
   def self.included(base)
     base.cattr_accessor :enum_columns

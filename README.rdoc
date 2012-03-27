@@ -3,16 +3,16 @@
 == Description
 Simple Enum is a simple and useful plugin for using enum attribute.
 
-* version 0.23
+* version 0.2.4
 * by Caryl
 
 == Requirements
 
-* Rails 2.2 or greater
+* Rails 3.1 or greater
 
 ==Installation
 
-  ./script/plugin install git://github.com/caryl/simple_enum.git
+  gem 'simple_enums'
 
 ==Getting Started
 
